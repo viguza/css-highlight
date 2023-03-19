@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<title>CSS-Highlight</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
-	<script src="js/popup.js"></script>
+	<script src="popup.js"></script>
 </head>
 <body>
 	<h1>CSS-Highlight</h1>
@@ -17,7 +17,10 @@
     </select>
     <input type="text" id="identifierInput" placeholder="e.g. my-class">
 		<input type="color" id="colorInput" value="#ffdc00"/>
-		<button id="highlightButton">Highlight</button>
+		<div class="buttons-container">
+			<button id="highlightButton" class="btn">Highlight</button>
+			<button id="resetButton" class="btn">Reset</button>
+		</div>
 	</form>
 </body>
 </html>

@@ -45,13 +45,17 @@ select {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 input[type="color"] {
-  width: 25px;
+  width: 100%;
   cursor: pointer;
   margin-bottom: 10px;
 }
-#highlightButton {
+.buttons-container {
   width: 100%;
-  background-color: #0080ff;
+  display: flex;
+  justify-content: space-between;
+}
+.btn {
+  width: calc(50% - 5px);
   color: #fff;
   padding: 10px 20px;
   border: none;
@@ -61,7 +65,18 @@ input[type="color"] {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease-in-out;
 }
+.btn:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+#resetButton {
+  background-color: #516273;
+}
+#resetButton:hover {
+  background-color: #374655;
+}
+#highlightButton {
+  background-color: #0080ff;
+}
 #highlightButton:hover {
   background-color: #0059b3;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
