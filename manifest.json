@@ -6,11 +6,11 @@
   "icons": {
   },
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "popup/popup.html",
     "default_title": "CSS-Highlight"
   },
   "background": {
-    "service_worker": "js/background.js"
+    "service_worker": "background/background.js"
   },
   "content_scripts": [
     {
@@ -20,7 +20,7 @@
         "<all_urls>"
       ],
       "js": [
-        "js/content.js"
+        "content/content.js"
       ]
     }
   ],
