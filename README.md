@@ -1,2 +1,2 @@
-# css-highlight
-Chrome extension that highlights all HTML elements with specific css class or id
+# CSS-Highlight
+CSS-Highlight is a Chrome extension that allows developers to quickly and easily highlight HTML elements that contain a specific class or ID by changing their background color. With CSS-Highlight, you can input a class name or ID and instantly see all elements that contain that identifier highlighted on the page. This extension is perfect for front-end developers, designers, and anyone who works with CSS on a regular basis.
