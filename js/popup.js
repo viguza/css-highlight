@@ -4,11 +4,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var searchType = document.getElementById('searchType').value;
     var identifier = document.getElementById('identifierInput').value;
+    var color = document.getElementById('colorInput').value;
 
     chrome.runtime.sendMessage({
-      type: 'highlight',
       searchType: searchType,
-      identifier: identifier
+      identifier: identifier,
+      color: color
     });
   });
 });

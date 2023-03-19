@@ -9,6 +9,6 @@ chrome.runtime.onMessage.addListener(function(message) {
   }
 
   for (var i = 0; i < elements.length; i++) {
-    elements[i].style.backgroundColor = '#ffdc00';
+    elements[i].style.backgroundColor = message.color;
   }
 });

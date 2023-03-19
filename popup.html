@@ -6,17 +6,19 @@
 	<style>
 		body {
 			width: 300px;
-			height: 200px;
-			padding: 20px;
+			height: 230px;
+			padding: 10px;
 			font-family: Arial, sans-serif;
 			font-size: 14px;
 			text-align: center;
 		}
 		form {
 			background-color: #fff;
-			padding: 20px;
+			padding: 10px;
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 			border-radius: 5px;
+			margin: 10px;
+			text-align: left;
 		}
 		h1 {
 			margin-top: 0;
@@ -35,10 +37,23 @@
 		input[type="text"] {
 			width: 135px;
 			padding: 10px;
-			margin-bottom: 20px;
+			margin-bottom: 10px;
 			border: none;
 			border-radius: 3px;
 			box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+		}
+		select {
+      width: 100px;
+			padding: 10px;
+			margin-bottom: 10px;
+			border: none;
+			border-radius: 3px;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+		}
+		input[type="color"] {
+			width: 25px;
+			cursor: pointer;
+			margin-bottom: 10px;
 		}
 		button {
       width: 100%;
@@ -56,14 +71,6 @@
 			background-color: #0059b3;
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 		}
-		select {
-      width: 100px;
-			padding: 10px;
-			margin-bottom: 20px;
-			border: none;
-			border-radius: 3px;
-			box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-		}
 	</style>
 	<script src="js/popup.js"></script>
 </head>
@@ -77,6 +84,7 @@
       <option value="id">ID</option>
     </select>
     <input type="text" id="identifierInput" placeholder="e.g. my-class">
+		<input type="color" id="colorInput" value="#ffdc00"/>
 		<button id="highlightButton">Highlight</button>
 	</form>
 </body>
