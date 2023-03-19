@@ -1,0 +1,30 @@
+{
+  "name": "CSS-Highlight",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "description": "Highlight HTML elements with a specific class or ID",
+  "icons": {
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "CSS-Highlight"
+  },
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*",
+        "<all_urls>"
+      ],
+      "js": [
+        "js/content.js"
+      ]
+    }
+  ],
+  "permissions": [
+    "activeTab"
+  ]
+}
