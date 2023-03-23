@@ -4,10 +4,14 @@
   "manifest_version": 3,
   "description": "Highlight HTML elements with a specific class or ID",
   "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png"
   },
   "action": {
     "default_popup": "popup/popup.html",
-    "default_title": "CSS-Highlight"
+    "default_title": "CSS-Highlight",
+    "default_icon": "icons/icon32.png"
   },
   "background": {
     "service_worker": "background/background.js"
