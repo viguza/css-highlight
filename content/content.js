@@ -21,7 +21,10 @@ function highlight(type, identifier, color) {
 
   for (var i = 0; i < elements.length; i++) {
     let element = elements[i];
-    originalElements.push({object: element, color: element.style.backgroundColor});
+    const found = originalElements.some(el => el.object === element)
+    if (!found) {
+      originalElements.push({object: element, color: element.style.backgroundColor});
+    }
     element.style.backgroundColor = color;
   }
 }
