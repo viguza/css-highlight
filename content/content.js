@@ -47,6 +47,12 @@ chrome.runtime.onMessage.addListener(function(message) {
     if(message.name === 'reset') {
       reset();
     }
+    if(message.name === 'scrollToElement') {
+      scrollToElement(message.index);
+    }
+    if(message.name === 'highlightCurrentElement') {
+      highlightCurrentElement(message.index);
+    }
   } catch (error) {
     console.error('Error in message listener:', error);
     showErrorMessage();
@@ -55,16 +61,40 @@ chrome.runtime.onMessage.addListener(function(message) {
 
 function highlight(type, identifier, color, highlightStyle, opacity, textColor, changeTextColor) {
   try {
-    let elements;
-
+    let elements = [];
+    
     if (type === 'class') {
-      elements = document.getElementsByClassName(identifier);
+      elements = Array.from(document.getElementsByClassName(identifier));
     } else if (type === 'id') {
       var element = document.getElementById(identifier);
       elements = element ? [element] : [];
     } else {
-      elements = document.querySelectorAll(`.${identifier},#${identifier}`);
+      elements = Array.from(document.querySelectorAll(`.${identifier},#${identifier}`));
     }
+
+    // Store elements for navigation
+    foundElementsForNavigation = elements;
+
+    // Send serializable element information back to popup
+    const elementData = elements.map(element => ({
+      tagName: element.tagName.toLowerCase(),
+      className: element.className || '',
+      id: element.id || '',
+      position: {
+        x: Math.round(element.getBoundingClientRect().left),
+        y: Math.round(element.getBoundingClientRect().top)
+      },
+      textContent: element.textContent ? element.textContent.substring(0, 50) + (element.textContent.length > 50 ? '...' : '') : '',
+      attributes: Array.from(element.attributes).map(attr => ({
+        name: attr.name,
+        value: attr.value
+      }))
+    }));
+
+    chrome.runtime.sendMessage({
+      name: 'elementsFound',
+      elements: elementData
+    });
 
     for (var i = 0; i < elements.length; i++) {
       let element = elements[i];
@@ -111,16 +141,20 @@ function applyHighlightStyle(element, style, color, opacity, textColor, changeTe
     case 'background':
       element.style.backgroundColor = rgbaColor;
       break;
+
     case 'border':
       element.style.border = `3px solid ${rgbaColor}`;
       break;
+
     case 'outline':
       element.style.outline = `3px solid ${rgbaColor}`;
       element.style.outlineOffset = '2px';
       break;
+
     case 'underline':
       element.style.textDecoration = `underline ${rgbaColor} 3px`;
       break;
+
     case 'box-shadow':
       element.style.boxShadow = `0 0 0 3px ${rgbaColor}`;
       break;
@@ -159,8 +193,58 @@ function reset() {
       }
     }
     originalElements = [];
+
+    // Clear element info in popup
+    chrome.runtime.sendMessage({
+      name: 'elementsFound',
+      elements: []
+    });
   } catch (error) {
     console.error('Error in reset function:', error);
     showErrorMessage();
+  }
+}
+
+// Store found elements for navigation
+let foundElementsForNavigation = [];
+
+function scrollToElement(index) {
+  if (foundElementsForNavigation[index]) {
+    const element = foundElementsForNavigation[index];
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+
+    // Highlight the element temporarily
+    const originalBackground = element.style.backgroundColor;
+    element.style.backgroundColor = '#ff6b6b';
+    element.style.transition = 'background-color 0.3s ease';
+
+    setTimeout(() => {
+      element.style.backgroundColor = originalBackground;
+      element.style.transition = '';
+    }, 2000);
+  }
+}
+
+function highlightCurrentElement(index) {
+  // Remove previous navigation highlights
+  foundElementsForNavigation.forEach(el => {
+    el.style.outline = '';
+    el.style.outlineOffset = '';
+  });
+
+  // Highlight current element
+  if (foundElementsForNavigation[index]) {
+    const currentElement = foundElementsForNavigation[index];
+    currentElement.style.outline = '2px solid #007bff';
+    currentElement.style.outlineOffset = '2px';
+
+    // Scroll to element
+    currentElement.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
   }
 }

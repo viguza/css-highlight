@@ -26,6 +26,27 @@
 			<input type="color" id="colorInput" value="#ffdc00" title="Choose highlight color">
 		</div>
 
+		<div class="element-info" id="elementInfo" style="display: none;">
+			<div class="info-header">
+				<span class="element-count" id="elementCount">0 elements found</span>
+				<div class="navigation-controls">
+					<button id="prevElement" class="nav-btn" title="Previous element">◀</button>
+					<span id="currentElementIndex">0</span>
+					<button id="nextElement" class="nav-btn" title="Next element">▶</button>
+				</div>
+			</div>
+			<div class="element-details" id="elementDetails">
+				<div class="detail-row">
+					<label>Tag:</label>
+					<span id="elementTag">-</span>
+				</div>
+				<div class="detail-row">
+					<label>ID:</label>
+					<span id="elementId">-</span>
+				</div>
+			</div>
+		</div>
+
 		<div class="highlight-options-collapsible">
 			<button class="collapse-toggle" id="collapseToggle">
 				<span class="toggle-text">Show Advanced Options</span>
