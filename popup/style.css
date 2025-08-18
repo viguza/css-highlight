@@ -162,3 +162,164 @@ input[type="color"]:hover {
 * {
   transition: all 0.2s ease;
 }
+
+.highlight-options-collapsible {
+  margin: 15px 0;
+}
+
+.collapse-toggle {
+  width: 100%;
+  padding: 10px 15px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #495057;
+  transition: all 0.2s ease;
+}
+
+.collapse-toggle:hover {
+  background: #e9ecef;
+  border-color: #dee2e6;
+}
+
+.toggle-icon {
+  font-size: 10px;
+  color: #6c757d;
+  transition: transform 0.2s ease;
+}
+
+.highlight-options {
+  margin-top: 8px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.option-group {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.option-group:last-child {
+  margin-bottom: 0;
+}
+
+.option-group label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #495057;
+}
+
+.option-group select,
+.option-group input[type="range"] {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+/* Custom range input styling */
+.option-group input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: #e9ecef;
+  border-radius: 3px;
+  outline: none;
+  padding: 0;
+  --fill-percentage: 100%;
+}
+
+.option-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.option-group input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #007bff;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.option-group input[type="range"]::-webkit-slider-track {
+  background: linear-gradient(to right, #007bff 0%, #007bff var(--fill-percentage), #e9ecef var(--fill-percentage));
+  border-radius: 3px;
+  height: 6px;
+}
+
+.option-group input[type="range"]::-moz-range-track {
+  background: linear-gradient(to right, #007bff 0%, #007bff var(--fill-percentage), #e9ecef var(--fill-percentage));
+  border-radius: 3px;
+  height: 6px;
+}
+
+.option-group input[type="color"] {
+  width: 45px;
+  height: 32px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.opacity-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.opacity-controls input[type="range"] {
+  flex: 1;
+}
+
+#opacityValue {
+  font-size: 11px;
+  color: #6c757d;
+  min-width: 30px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.text-color-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #495057;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+  width: 13px;
+  height: 13px;
+}

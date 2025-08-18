@@ -25,6 +25,44 @@
 			<input type="text" id="identifierInput" placeholder="e.g. my-class">
 			<input type="color" id="colorInput" value="#ffdc00" title="Choose highlight color">
 		</div>
+
+		<div class="highlight-options-collapsible">
+			<button class="collapse-toggle" id="collapseToggle">
+				<span class="toggle-text">Show Advanced Options</span>
+				<span class="toggle-icon">▼</span>
+			</button>
+			
+			<div class="highlight-options" id="highlightOptions" style="display: none;">
+				<div class="option-group">
+					<label for="highlightStyle">Highlight Style:</label>
+					<select id="highlightStyle">
+						<option value="background" selected>Background</option>
+						<option value="border">Border</option>
+						<option value="outline">Outline</option>
+						<option value="underline">Underline</option>
+						<option value="box-shadow">Box Shadow</option>
+					</select>
+				</div>
+				
+				<div class="option-group">
+					<label for="opacityInput">Opacity:</label>
+					<div class="opacity-controls">
+						<input type="range" id="opacityInput" min="0.1" max="1" step="0.1" value="1" title="Adjust highlight opacity">
+						<span id="opacityValue">100%</span>
+					</div>
+				</div>
+				
+				<div class="option-group">
+					<label for="textColorInput">Text Color:</label>
+					<div class="text-color-controls">
+						<input type="color" id="textColorInput" value="#000000" title="Choose text color">
+						<label class="checkbox-label">
+							<input type="checkbox" id="changeTextColor"> Change text color
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
 		
 		<div class="actions">
 			<button id="highlightButton" class="btn btn-primary">Highlight</button>
