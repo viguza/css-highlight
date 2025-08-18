@@ -15,15 +15,68 @@
 		<div class="search-section">
 			<label for="searchType">Search for:</label>
 			<select id="searchType">
-				<option value="both" selected>All</option>
-				<option value="class">Class</option>
+				<option value="class" selected>Class</option>
 				<option value="id">ID</option>
+				<option value="css-selector">CSS Selector</option>
+				<option value="attribute">Attribute</option>
+				<option value="text-content">Text Content</option>
 			</select>
 		</div>
 		
-		<div class="input-section">
-			<input type="text" id="identifierInput" placeholder="e.g. my-class">
-			<input type="color" id="colorInput" value="#ffdc00" title="Choose highlight color">
+		<div class="input-section" id="basicInputSection">
+			<div class="search-option-group">
+				<label for="identifierInput">Search Term:</label>
+				<input type="text" id="identifierInput" placeholder="e.g. my-class" class="advanced-input">
+				<div class="selector-examples" id="basicExamples">
+					<small>Examples: <code>.button</code>, <code>.nav-item</code>, <code>.container</code></small>
+				</div>
+				<div class="color-section">
+					<label for="colorInput">Highlight Color:</label>
+					<input type="color" id="colorInput" value="#ffdc00" title="Choose highlight color">
+				</div>
+			</div>
+		</div>
+
+		<div class="advanced-search-options" id="advancedSearchOptions" style="display: none;">
+			<div class="search-option-group" id="cssSelectorGroup" style="display: none;">
+				<label for="cssSelectorInput">CSS Selector:</label>
+				<input type="text" id="cssSelectorInput" placeholder="e.g. div.container > p:first-child" class="advanced-input">
+				<div class="selector-examples">
+					<small>Examples: <code>div.container</code>, <code>p:first-child</code>, <code>[data-testid]</code></small>
+				</div>
+				<div class="color-section">
+					<label for="colorInputAdvanced">Highlight Color:</label>
+					<input type="color" id="colorInputAdvanced" value="#ffdc00" title="Choose highlight color">
+				</div>
+			</div>
+			
+			<div class="search-option-group" id="attributeGroup" style="display: none;">
+				<label for="attributeName">Attribute Name:</label>
+				<input type="text" id="attributeName" placeholder="e.g. data-testid" class="advanced-input">
+				<label for="attributeValue">Attribute Value:</label>
+				<input type="text" id="attributeValue" placeholder="e.g. submit-button (optional)" class="advanced-input">
+				<div class="color-section">
+					<label for="colorInputAdvanced">Highlight Color:</label>
+					<input type="color" id="colorInputAdvanced" value="#ffdc00" title="Choose highlight color">
+				</div>
+			</div>
+			
+			<div class="search-option-group" id="textContentGroup" style="display: none;">
+				<label for="textContentInput">Text to Find:</label>
+				<input type="text" id="textContentInput" placeholder="e.g. Submit" class="advanced-input">
+				<div class="text-options">
+					<label class="checkbox-label">
+						<input type="checkbox" id="caseSensitive"> Case sensitive
+					</label>
+					<label class="checkbox-label">
+						<input type="checkbox" id="partialMatch"> Partial match
+					</label>
+				</div>
+				<div class="color-section">
+					<label for="colorInputAdvanced">Highlight Color:</label>
+					<input type="color" id="colorInputAdvanced" value="#ffdc00" title="Choose highlight color">
+				</div>
+			</div>
 		</div>
 
 		<div class="element-info" id="elementInfo" style="display: none;">

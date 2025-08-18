@@ -71,9 +71,41 @@ select:focus {
 
 /* Input section */
 .input-section {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
+  margin: 15px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.input-section .search-option-group {
+  margin-bottom: 0;
+}
+
+.input-section .search-option-group label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #495057;
+}
+
+.input-section .advanced-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 12px;
+  box-sizing: border-box;
+  font-family: 'Courier New', monospace;
+}
+
+.input-section input[type="color"] {
+  align-self: flex-start;
+  width: 45px;
+  height: 32px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
 }
 
 input[type="text"] {
@@ -420,4 +452,93 @@ input[type="color"]:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.advanced-search-options {
+  margin: 15px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.search-option-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-option-group:last-child {
+  margin-bottom: 0;
+}
+
+.search-option-group label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #495057;
+}
+
+.advanced-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 12px;
+  box-sizing: border-box;
+  font-family: 'Courier New', monospace;
+}
+
+.selector-examples {
+  margin-top: 5px;
+}
+
+.selector-examples small {
+  font-size: 10px;
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+.selector-examples code {
+  background: #e9ecef;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+}
+
+.text-options {
+  display: flex;
+  gap: 15px;
+  margin-top: 5px;
+}
+
+.text-options .checkbox-label {
+  margin: 0;
+  font-size: 11px;
+}
+
+.color-section {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-section label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #495057;
+  margin: 0;
+}
+
+.color-section input[type="color"] {
+  width: 45px;
+  height: 32px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
 }

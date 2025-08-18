@@ -63,13 +63,33 @@ function highlight(type, identifier, color, highlightStyle, opacity, textColor, 
   try {
     let elements = [];
     
-    if (type === 'class') {
-      elements = Array.from(document.getElementsByClassName(identifier));
-    } else if (type === 'id') {
-      var element = document.getElementById(identifier);
-      elements = element ? [element] : [];
-    } else {
-      elements = Array.from(document.querySelectorAll(`.${identifier},#${identifier}`));
+    switch (type) {
+      case 'class':
+        elements = Array.from(document.getElementsByClassName(identifier));
+        break;
+      case 'id':
+        var element = document.getElementById(identifier);
+        elements = element ? [element] : [];
+        break;
+      case 'css-selector':
+        try {
+          elements = Array.from(document.querySelectorAll(identifier));
+        } catch (error) {
+          console.error('Invalid CSS selector:', identifier);
+          showErrorMessage();
+          return;
+        }
+        break;
+      case 'attribute':
+        elements = findElementsByAttribute(identifier);
+        break;
+      case 'text-content':
+        elements = findElementsByText(identifier);
+        break;
+      default:
+        // Fallback to original behavior for 'both' and other types
+        elements = Array.from(document.querySelectorAll(`.${identifier},#${identifier}`));
+        break;
     }
 
     // Store elements for navigation
@@ -247,4 +267,79 @@ function highlightCurrentElement(index) {
       block: 'center'
     });
   }
+}
+
+function findElementsByAttribute(attributeString) {
+  let elements = [];
+
+  try {
+    if (attributeString.includes('=')) {
+      // Attribute with value: data-testid="submit-button"
+      const match = attributeString.match(/([^=]+)="([^"]+)"/);
+      if (match) {
+        const [, attrName, attrValue] = match;
+        elements = Array.from(document.querySelectorAll(`[${attrName}="${attrValue}"]`));
+      }
+    } else {
+      // Attribute without value: data-testid
+      elements = Array.from(document.querySelectorAll(`[${attributeString}]`));
+    }
+  } catch (error) {
+    console.error('Error finding elements by attribute:', error);
+  }
+
+  return elements;
+}
+
+function findElementsByText(textConfig) {
+  let elements = [];
+
+  try {
+    const config = JSON.parse(textConfig);
+    const searchText = config.text;
+    const caseSensitive = config.caseSensitive;
+    const partialMatch = config.partialMatch;
+
+    if (!searchText) return elements;
+
+    // Walk through all text nodes in the document
+    const walker = document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_TEXT,
+      null,
+      false
+    );
+
+    const textNodes = [];
+    let node;
+    while (node = walker.nextNode()) {
+      textNodes.push(node);
+    }
+
+    // Find elements containing the text
+    textNodes.forEach(textNode => {
+      const text = textNode.textContent;
+      const element = textNode.parentElement;
+
+      if (element && element !== document.body) {
+        let matches = false;
+
+        if (caseSensitive) {
+          matches = partialMatch ? text.includes(searchText) : text === searchText;
+        } else {
+          const lowerText = text.toLowerCase();
+          const lowerSearch = searchText.toLowerCase();
+          matches = partialMatch ? lowerText.includes(lowerSearch) : lowerText === lowerSearch;
+        }
+
+        if (matches && !elements.includes(element)) {
+          elements.push(element);
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error finding elements by text:', error);
+  }
+
+  return elements;
 }
