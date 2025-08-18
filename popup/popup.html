@@ -7,20 +7,29 @@
 	<script src="popup.js"></script>
 </head>
 <body>
-	<h1>CSS-Highlight</h1>
-	<form>
-    <h3>Search for:</h3>
-    <select id="searchType">
-      <option value="both" selected>All</option>
-      <option value="class">Class</option>
-      <option value="id">ID</option>
-    </select>
-    <input type="text" id="identifierInput" placeholder="e.g. my-class">
-		<input type="color" id="colorInput" value="#ffdc00"/>
-		<div class="buttons-container">
-			<button id="highlightButton" class="btn">Highlight</button>
-			<button id="resetButton" class="btn">Reset</button>
+	<header>
+		<h1>CSS-Highlight</h1>
+	</header>
+	
+	<main>
+		<div class="search-section">
+			<label for="searchType">Search for:</label>
+			<select id="searchType">
+				<option value="both" selected>All</option>
+				<option value="class">Class</option>
+				<option value="id">ID</option>
+			</select>
 		</div>
-	</form>
+		
+		<div class="input-section">
+			<input type="text" id="identifierInput" placeholder="e.g. my-class">
+			<input type="color" id="colorInput" value="#ffdc00" title="Choose highlight color">
+		</div>
+		
+		<div class="actions">
+			<button id="highlightButton" class="btn btn-primary">Highlight</button>
+			<button id="resetButton" class="btn btn-secondary">Reset</button>
+		</div>
+	</main>
 </body>
 </html>
