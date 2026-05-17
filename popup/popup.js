@@ -162,9 +162,10 @@ document.addEventListener('DOMContentLoaded', function() {
     elementCount.textContent = `${foundElements.length} element${foundElements.length !== 1 ? 's' : ''} found`;
     currentIndex.textContent = `${currentElementIndex + 1} of ${foundElements.length}`;
 
-    // Update element details using serialized data
-    elementTag.textContent = element.tagName || 'unknown';
-    elementId.textContent = element.id || 'none';
+    elementTag.textContent = element.tagName || '-';
+    elementId.textContent = element.id || '-';
+    document.getElementById('elementClass').textContent = element.className || '-';
+    document.getElementById('elementText').textContent = element.textContent || '-';
   }
 
   function highlightCurrentElement() {
@@ -338,6 +339,23 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('liveDot').style.display = state.liveMode ? 'inline-block' : 'none';
     }
   }
+
+  document.getElementById('copyResults').addEventListener('click', function() {
+    if (foundElements.length === 0) return;
+    const lines = [`${foundElements.length} element${foundElements.length !== 1 ? 's' : ''} found\n`];
+    foundElements.forEach(function(el, i) {
+      let line = `${i + 1}. <${el.tagName}>`;
+      if (el.id) line += ` #${el.id}`;
+      if (el.className) line += ` .${el.className.trim().split(/\s+/).join('.')}`;
+      if (el.textContent) line += ` — "${el.textContent}"`;
+      lines.push(line);
+    });
+    navigator.clipboard.writeText(lines.join('\n')).then(function() {
+      const btn = document.getElementById('copyResults');
+      btn.textContent = 'Copied!';
+      setTimeout(function() { btn.textContent = 'Copy results'; }, 1500);
+    });
+  });
 
   document.getElementById('historyClear').addEventListener('click', function() {
     chrome.storage.local.remove(HISTORY_KEY, function() {

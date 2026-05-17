@@ -1,3 +1,29 @@
+chrome.commands.onCommand.addListener(function(command) {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    if (!tabs[0]) return;
+    if (command === 'highlight') {
+      chrome.storage.local.get('css_highlight_history', function(result) {
+        const history = result['css_highlight_history'] || [];
+        if (history.length === 0) return;
+        const latest = history[0];
+        chrome.tabs.sendMessage(tabs[0].id, {
+          name: 'highlight',
+          searchType: latest.searchType,
+          identifier: latest.identifier,
+          color: latest.color,
+          highlightStyle: 'background',
+          opacity: '1',
+          textColor: '#000000',
+          changeTextColor: false,
+          liveMode: false
+        }).catch(() => {});
+      });
+    } else if (command === 'clear') {
+      chrome.tabs.sendMessage(tabs[0].id, { name: 'reset' }).catch(() => {});
+    }
+  });
+});
+
 chrome.runtime.onMessage.addListener(function(message) {
   switch(message.name) {
     case 'highlight':

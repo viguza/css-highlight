@@ -516,6 +516,26 @@ input[type="color"]:hover {
   gap: 12px;
 }
 
+/* Copy button */
+.copy-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 5px;
+  background: none;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #6c757d;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.copy-btn:hover {
+  background: #f0f4ff;
+  color: #667eea;
+  border-color: #c5cff7;
+}
+
 /* History */
 .history-section {
   margin-top: 14px;

@@ -29,5 +29,15 @@
       ]
     }
   ],
-  "permissions": ["storage"]
+  "permissions": ["storage"],
+  "commands": {
+    "highlight": {
+      "suggested_key": { "default": "Ctrl+Shift+H", "mac": "Command+Shift+H" },
+      "description": "Re-run last highlight"
+    },
+    "clear": {
+      "suggested_key": { "default": "Ctrl+Shift+X", "mac": "Command+Shift+X" },
+      "description": "Clear all highlights"
+    }
+  }
 }

@@ -132,7 +132,8 @@ function highlight(type, identifier, color, highlightStyle, opacity, textColor, 
     const elementData = elements.map(el => ({
       tagName: el.tagName.toLowerCase(),
       id: el.id || '',
-      textContent: el.textContent ? el.textContent.substring(0, 50) + (el.textContent.length > 50 ? '...' : '') : ''
+      className: (typeof el.className === 'string' ? el.className : (el.className.baseVal || '')),
+      textContent: el.textContent ? el.textContent.trim().substring(0, 40) + (el.textContent.trim().length > 40 ? '…' : '') : ''
     }));
 
     chrome.runtime.sendMessage({ name: 'elementsFound', elements: elementData });
@@ -249,6 +250,7 @@ function reset() {
       }
     }
     originalElements = [];
+    foundElementsForNavigation = [];
     lastHighlightConfig = null;
     lastSearchParams = null;
     currentNavIndex = -1;
@@ -308,6 +310,7 @@ function highlightCurrentElement(index) {
 
 function getCurrentState() {
   if (!lastSearchParams || !lastHighlightConfig) return null;
+  const hasActiveHighlights = originalElements.length > 0;
   return {
     searchType: lastSearchParams.type,
     identifier: lastSearchParams.identifier,
@@ -317,13 +320,14 @@ function getCurrentState() {
     textColor: lastHighlightConfig.textColor,
     changeTextColor: lastHighlightConfig.changeTextColor,
     liveMode: observer !== null,
-    elementData: foundElementsForNavigation.map(function(el) {
+    elementData: hasActiveHighlights ? foundElementsForNavigation.map(function(el) {
       return {
         tagName: el.tagName.toLowerCase(),
         id: el.id || '',
-        textContent: el.textContent ? el.textContent.substring(0, 50) + (el.textContent.length > 50 ? '...' : '') : ''
+        className: (typeof el.className === 'string' ? el.className : (el.className.baseVal || '')),
+        textContent: el.textContent ? el.textContent.trim().substring(0, 40) + (el.textContent.trim().length > 40 ? '…' : '') : ''
       };
-    })
+    }) : []
   };
 }
 
