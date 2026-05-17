@@ -1,4 +1,6 @@
 let originalElements = [];
+let lastHighlightConfig = null;
+let currentNavIndex = -1;
 
 // Function to display error message to user
 function showErrorMessage() {
@@ -92,8 +94,10 @@ function highlight(type, identifier, color, highlightStyle, opacity, textColor, 
         break;
     }
 
-    // Store elements for navigation
+    // Store elements and highlight config for navigation
     foundElementsForNavigation = elements;
+    lastHighlightConfig = { highlightStyle, color, opacity, textColor, changeTextColor };
+    currentNavIndex = -1;
 
     // Send serializable element information back to popup
     const elementData = elements.map(element => ({
@@ -213,6 +217,8 @@ function reset() {
       }
     }
     originalElements = [];
+    lastHighlightConfig = null;
+    currentNavIndex = -1;
 
     // Clear element info in popup
     chrome.runtime.sendMessage({
@@ -249,23 +255,20 @@ function scrollToElement(index) {
 }
 
 function highlightCurrentElement(index) {
-  // Remove previous navigation highlights
-  foundElementsForNavigation.forEach(el => {
-    el.style.outline = '';
-    el.style.outlineOffset = '';
-  });
+  // Restore user's chosen highlight style on the previously focused element
+  if (currentNavIndex >= 0 && foundElementsForNavigation[currentNavIndex] && lastHighlightConfig) {
+    const prev = foundElementsForNavigation[currentNavIndex];
+    const c = lastHighlightConfig;
+    applyHighlightStyle(prev, c.highlightStyle, c.color, c.opacity, c.textColor, c.changeTextColor);
+  }
 
-  // Highlight current element
+  currentNavIndex = index;
+
   if (foundElementsForNavigation[index]) {
     const currentElement = foundElementsForNavigation[index];
-    currentElement.style.outline = '2px solid #007bff';
-    currentElement.style.outlineOffset = '2px';
-
-    // Scroll to element
-    currentElement.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center'
-    });
+    currentElement.style.outline = '3px solid #007bff';
+    currentElement.style.outlineOffset = '3px';
+    currentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }
 

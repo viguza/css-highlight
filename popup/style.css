@@ -190,10 +190,6 @@ input[type="color"]:hover {
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
 }
 
-/* Smooth animations */
-* {
-  transition: all 0.2s ease;
-}
 
 .highlight-options-collapsible {
   margin: 15px 0;

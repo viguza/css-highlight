@@ -47,16 +47,23 @@ document.addEventListener('DOMContentLoaded', function() {
   const textContentGroup = document.getElementById('textContentGroup');
   const identifierInput = document.getElementById('identifierInput');
   const colorInput = document.getElementById('colorInput');
-  const colorInputAdvanced = document.getElementById('colorInputAdvanced');
+  const advancedColorPickers = [
+    document.getElementById('colorInputCssSelector'),
+    document.getElementById('colorInputAttribute'),
+    document.getElementById('colorInputText')
+  ];
 
-  // Synchronize color pickers
+  // Synchronize all color pickers with each other
   function syncColorPickers() {
     colorInput.addEventListener('input', function() {
-      colorInputAdvanced.value = this.value;
+      advancedColorPickers.forEach(p => { p.value = this.value; });
     });
-    
-    colorInputAdvanced.addEventListener('input', function() {
-      colorInput.value = this.value;
+
+    advancedColorPickers.forEach(picker => {
+      picker.addEventListener('input', function() {
+        colorInput.value = this.value;
+        advancedColorPickers.forEach(p => { if (p !== this) p.value = this.value; });
+      });
     });
   }
 
@@ -160,20 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
     elementId.textContent = element.id || 'none';
   }
 
-  function navigateToElement(selector, pathIndex) {
-    // Since we don't have direct DOM access, we'll just scroll to the current element
-    // and provide visual feedback
-    if (foundElements[currentElementIndex]) {
-      const currentElement = foundElements[currentElementIndex];
-
-      // Send message to content script to scroll to and highlight this element
-      chrome.runtime.sendMessage({
-        name: 'scrollToElement',
-        index: currentElementIndex
-      });
-    }
-  }
-
   function highlightCurrentElement() {
     // Send message to content script to highlight the current element
     if (foundElements.length > 0) {
@@ -195,12 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var textColor = document.getElementById('textColorInput').value;
     var changeTextColor = document.getElementById('changeTextColor').checked;
 
-    // Get color from appropriate input based on search type
-    if (searchTypeValue === 'class' || searchTypeValue === 'id') {
-      color = colorInput.value;
-    } else {
-      color = colorInputAdvanced.value;
-    }
+    color = colorInput.value;
 
     // Get identifier based on search type
     switch (searchTypeValue) {
@@ -252,10 +240,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('caseSensitive').checked = false;
     document.getElementById('partialMatch').checked = false;
     
-    // Reset both color pickers to the same value
+    // Reset all color pickers to the same value
     const defaultColor = '#ffdc00';
     colorInput.value = defaultColor;
-    colorInputAdvanced.value = defaultColor;
+    advancedColorPickers.forEach(p => { p.value = defaultColor; });
     
     document.getElementById('highlightStyle').value = 'background';
     document.getElementById('opacityInput').value = '1';
