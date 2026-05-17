@@ -29,5 +29,5 @@
       ]
     }
   ],
-  "permissions": []
+  "permissions": ["storage"]
 }

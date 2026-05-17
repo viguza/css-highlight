@@ -20,8 +20,7 @@ chrome.runtime.onMessage.addListener(function(message) {
       });
       break;
     case 'elementsFound':
-      // Forward element information from content script to popup
-      chrome.runtime.sendMessage(message);
+      chrome.runtime.sendMessage(message).catch(() => {});
       break;
     case 'scrollToElement':
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {

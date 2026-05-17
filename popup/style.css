@@ -538,3 +538,120 @@ input[type="color"]:hover {
   cursor: pointer;
   padding: 0;
 }
+
+/* History */
+.history-section {
+  margin-top: 16px;
+  border-top: 1px solid #e9ecef;
+  padding-top: 12px;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.history-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.history-clear {
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: #adb5bd;
+  cursor: pointer;
+  padding: 0;
+}
+
+.history-clear:hover {
+  color: #495057;
+}
+
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.history-item:hover {
+  background: #f0f4ff;
+  border-color: #c5cff7;
+}
+
+.history-badge {
+  flex-shrink: 0;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  color: white;
+  background: #adb5bd;
+}
+
+.history-badge--class    { background: #667eea; }
+.history-badge--id       { background: #20c997; }
+.history-badge--css-selector { background: #fd7e14; }
+.history-badge--attribute { background: #e83e8c; }
+.history-badge--text-content { background: #6f42c1; }
+
+.history-swatch {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.15);
+}
+
+.history-label {
+  flex: 1;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  color: #495057;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-delete {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  font-size: 10px;
+  color: #ced4da;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.history-item:hover .history-delete {
+  opacity: 1;
+}
+
+.history-delete:hover {
+  color: #dc3545;
+}

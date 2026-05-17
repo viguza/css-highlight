@@ -226,6 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
         textColor: textColor,
         changeTextColor: changeTextColor
       });
+      saveToHistory(buildHistoryEntry(searchTypeValue, identifier, color));
     }
   });
 
@@ -277,4 +278,183 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
   });
+
+  document.getElementById('historyClear').addEventListener('click', function() {
+    chrome.storage.local.remove(HISTORY_KEY, function() {
+      renderHistory([]);
+    });
+  });
+
+  loadHistory();
 });
+
+// --- History ---
+
+const HISTORY_KEY = 'css_highlight_history';
+const MAX_HISTORY = 10;
+
+function formatTypeBadge(type) {
+  return { 'class': 'cls', 'id': 'id', 'css-selector': 'css', 'attribute': 'attr', 'text-content': 'text' }[type] || type;
+}
+
+function formatHistoryLabel(entry) {
+  switch (entry.searchType) {
+    case 'class': return `.${entry.term}`;
+    case 'id': return `#${entry.term}`;
+    case 'css-selector': return entry.cssSelector;
+    case 'attribute':
+      return entry.attributeValue
+        ? `[${entry.attributeName}="${entry.attributeValue}"]`
+        : `[${entry.attributeName}]`;
+    case 'text-content': {
+      let label = `"${entry.text}"`;
+      if (entry.caseSensitive) label += ' · Aa';
+      if (entry.partialMatch) label += ' · ~';
+      return label;
+    }
+    default: return entry.identifier;
+  }
+}
+
+function buildHistoryEntry(searchTypeValue, identifier, color) {
+  const entry = {
+    timestamp: Date.now(),
+    searchType: searchTypeValue,
+    identifier: identifier,
+    color: color,
+    term: null,
+    cssSelector: null,
+    attributeName: null,
+    attributeValue: null,
+    text: null,
+    caseSensitive: false,
+    partialMatch: false,
+  };
+
+  switch (searchTypeValue) {
+    case 'class':
+    case 'id':
+      entry.term = document.getElementById('identifierInput').value;
+      break;
+    case 'css-selector':
+      entry.cssSelector = document.getElementById('cssSelectorInput').value;
+      break;
+    case 'attribute':
+      entry.attributeName = document.getElementById('attributeName').value;
+      entry.attributeValue = document.getElementById('attributeValue').value;
+      break;
+    case 'text-content':
+      entry.text = document.getElementById('textContentInput').value;
+      entry.caseSensitive = document.getElementById('caseSensitive').checked;
+      entry.partialMatch = document.getElementById('partialMatch').checked;
+      break;
+  }
+
+  return entry;
+}
+
+function saveToHistory(entry) {
+  chrome.storage.local.get(HISTORY_KEY, function(result) {
+    let history = result[HISTORY_KEY] || [];
+    const dedupKey = `${entry.searchType}:${entry.identifier}`;
+    history = history.filter(e => `${e.searchType}:${e.identifier}` !== dedupKey);
+    history.unshift(entry);
+    if (history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
+    chrome.storage.local.set({ [HISTORY_KEY]: history }, function() { renderHistory(history); });
+  });
+}
+
+function loadHistory() {
+  chrome.storage.local.get(HISTORY_KEY, function(result) {
+    renderHistory(result[HISTORY_KEY] || []);
+  });
+}
+
+function renderHistory(history) {
+  const section = document.getElementById('historySection');
+  const list = document.getElementById('historyList');
+
+  if (history.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = 'block';
+  list.innerHTML = '';
+
+  history.forEach(function(entry) {
+    const li = document.createElement('li');
+    li.className = 'history-item';
+
+    const badge = document.createElement('span');
+    badge.className = `history-badge history-badge--${entry.searchType}`;
+    badge.textContent = formatTypeBadge(entry.searchType);
+
+    const swatch = document.createElement('span');
+    swatch.className = 'history-swatch';
+    swatch.style.backgroundColor = entry.color;
+
+    const label = document.createElement('span');
+    label.className = 'history-label';
+    label.textContent = formatHistoryLabel(entry);
+    label.title = formatHistoryLabel(entry);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'history-delete';
+    deleteBtn.textContent = '✕';
+    deleteBtn.title = 'Remove';
+    deleteBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      deleteHistoryEntry(entry.timestamp);
+    });
+
+    li.appendChild(badge);
+    li.appendChild(swatch);
+    li.appendChild(label);
+    li.appendChild(deleteBtn);
+    li.addEventListener('click', function() { applyHistoryEntry(entry); });
+    list.appendChild(li);
+  });
+}
+
+function deleteHistoryEntry(timestamp) {
+  chrome.storage.local.get(HISTORY_KEY, function(result) {
+    const history = (result[HISTORY_KEY] || []).filter(e => e.timestamp !== timestamp);
+    chrome.storage.local.set({ [HISTORY_KEY]: history }, function() { renderHistory(history); });
+  });
+}
+
+function applyHistoryEntry(entry) {
+  const searchTypeEl = document.getElementById('searchType');
+  searchTypeEl.value = entry.searchType;
+
+  // updateSearchOptions is scoped inside DOMContentLoaded, trigger via change event
+  searchTypeEl.dispatchEvent(new Event('change'));
+
+  switch (entry.searchType) {
+    case 'class':
+    case 'id':
+      document.getElementById('identifierInput').value = entry.term || '';
+      break;
+    case 'css-selector':
+      document.getElementById('cssSelectorInput').value = entry.cssSelector || '';
+      break;
+    case 'attribute':
+      document.getElementById('attributeName').value = entry.attributeName || '';
+      document.getElementById('attributeValue').value = entry.attributeValue || '';
+      break;
+    case 'text-content':
+      document.getElementById('textContentInput').value = entry.text || '';
+      document.getElementById('caseSensitive').checked = entry.caseSensitive;
+      document.getElementById('partialMatch').checked = entry.partialMatch;
+      break;
+  }
+
+  const colorInput = document.getElementById('colorInput');
+  colorInput.value = entry.color;
+  ['colorInputCssSelector', 'colorInputAttribute', 'colorInputText'].forEach(function(id) {
+    document.getElementById(id).value = entry.color;
+  });
+
+  document.getElementById('highlightButton').click();
+}
