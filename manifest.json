@@ -2,7 +2,7 @@
   "name": "CSS-Highlight",
   "version": "2.0.0",
   "manifest_version": 3,
-  "description": "Highlight HTML elements with a specific class or ID",
+  "description": "Highlight page elements by text content, attribute, or CSS selector — instantly, without opening DevTools.",
   "icons": {
     "16": "icons/icon16.PNG",
     "32": "icons/icon32.PNG",
