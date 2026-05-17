@@ -10,10 +10,10 @@
 	<header>
 		<h1>CSS-Highlight</h1>
 	</header>
-	
+
 	<main>
 		<div class="search-section">
-			<label for="searchType">Search for:</label>
+			<label for="searchType">Search for</label>
 			<select id="searchType">
 				<option value="class" selected>Class</option>
 				<option value="id">ID</option>
@@ -22,47 +22,47 @@
 				<option value="text-content">Text Content</option>
 			</select>
 		</div>
-		
+
 		<div class="input-section" id="basicInputSection">
 			<div class="search-option-group">
-				<label for="identifierInput">Search Term:</label>
+				<div class="label-row">
+					<label for="identifierInput">Search term</label>
+					<input type="color" id="colorInput" value="#ffdc00" title="Highlight color">
+				</div>
 				<input type="text" id="identifierInput" placeholder="e.g. my-class" class="advanced-input">
 				<div class="selector-examples" id="basicExamples">
 					<small>Examples: <code>.button</code>, <code>.nav-item</code>, <code>.container</code></small>
-				</div>
-				<div class="color-section">
-					<label for="colorInput">Highlight Color:</label>
-					<input type="color" id="colorInput" value="#ffdc00" title="Choose highlight color">
 				</div>
 			</div>
 		</div>
 
 		<div class="advanced-search-options" id="advancedSearchOptions" style="display: none;">
 			<div class="search-option-group" id="cssSelectorGroup" style="display: none;">
-				<label for="cssSelectorInput">CSS Selector:</label>
+				<div class="label-row">
+					<label for="cssSelectorInput">CSS selector</label>
+					<input type="color" id="colorInputCssSelector" value="#ffdc00" title="Highlight color">
+				</div>
 				<input type="text" id="cssSelectorInput" placeholder="e.g. div.container > p:first-child" class="advanced-input">
 				<div class="selector-examples">
 					<small>Examples: <code>div.container</code>, <code>p:first-child</code>, <code>[data-testid]</code></small>
 				</div>
-				<div class="color-section">
-					<label for="colorInputCssSelector">Highlight Color:</label>
-					<input type="color" id="colorInputCssSelector" value="#ffdc00" title="Choose highlight color">
-				</div>
 			</div>
 
 			<div class="search-option-group" id="attributeGroup" style="display: none;">
-				<label for="attributeName">Attribute Name:</label>
-				<input type="text" id="attributeName" placeholder="e.g. data-testid" class="advanced-input">
-				<label for="attributeValue">Attribute Value:</label>
-				<input type="text" id="attributeValue" placeholder="e.g. submit-button (optional)" class="advanced-input">
-				<div class="color-section">
-					<label for="colorInputAttribute">Highlight Color:</label>
-					<input type="color" id="colorInputAttribute" value="#ffdc00" title="Choose highlight color">
+				<div class="label-row">
+					<label for="attributeName">Attribute name</label>
+					<input type="color" id="colorInputAttribute" value="#ffdc00" title="Highlight color">
 				</div>
+				<input type="text" id="attributeName" placeholder="e.g. data-testid" class="advanced-input">
+				<label for="attributeValue">Attribute value <span class="label-optional">(optional)</span></label>
+				<input type="text" id="attributeValue" placeholder="e.g. submit-button" class="advanced-input">
 			</div>
 
 			<div class="search-option-group" id="textContentGroup" style="display: none;">
-				<label for="textContentInput">Text to Find:</label>
+				<div class="label-row">
+					<label for="textContentInput">Text to find</label>
+					<input type="color" id="colorInputText" value="#ffdc00" title="Highlight color">
+				</div>
 				<input type="text" id="textContentInput" placeholder="e.g. Submit" class="advanced-input">
 				<div class="text-options">
 					<label class="checkbox-label">
@@ -72,11 +72,50 @@
 						<input type="checkbox" id="partialMatch"> Partial match
 					</label>
 				</div>
-				<div class="color-section">
-					<label for="colorInputText">Highlight Color:</label>
-					<input type="color" id="colorInputText" value="#ffdc00" title="Choose highlight color">
+			</div>
+		</div>
+
+		<div class="highlight-options-collapsible">
+			<button class="collapse-toggle" id="collapseToggle">
+				<span class="toggle-text">Show advanced options</span>
+				<span class="toggle-icon">▼</span>
+			</button>
+
+			<div class="highlight-options" id="highlightOptions" style="display: none;">
+				<div class="option-group">
+					<label for="highlightStyle">Highlight style</label>
+					<select id="highlightStyle">
+						<option value="background" selected>Background</option>
+						<option value="border">Border</option>
+						<option value="outline">Outline</option>
+						<option value="underline">Underline</option>
+						<option value="box-shadow">Box Shadow</option>
+					</select>
+				</div>
+
+				<div class="option-group">
+					<label for="opacityInput">Opacity</label>
+					<div class="opacity-controls">
+						<input type="range" id="opacityInput" min="0.1" max="1" step="0.1" value="1" title="Adjust highlight opacity">
+						<span id="opacityValue">100%</span>
+					</div>
+				</div>
+
+				<div class="option-group">
+					<label for="textColorInput">Text color</label>
+					<div class="text-color-controls">
+						<input type="color" id="textColorInput" value="#000000" title="Choose text color">
+						<label class="checkbox-label">
+							<input type="checkbox" id="changeTextColor"> Change text color
+						</label>
+					</div>
 				</div>
 			</div>
+		</div>
+
+		<div class="actions">
+			<button id="highlightButton" class="btn btn-primary">Highlight</button>
+			<button id="resetButton" class="btn btn-secondary">Reset</button>
 		</div>
 
 		<div class="element-info" id="elementInfo" style="display: none;">
@@ -90,57 +129,14 @@
 			</div>
 			<div class="element-details" id="elementDetails">
 				<div class="detail-row">
-					<label>Tag:</label>
+					<label>Tag</label>
 					<span id="elementTag">-</span>
 				</div>
 				<div class="detail-row">
-					<label>ID:</label>
+					<label>ID</label>
 					<span id="elementId">-</span>
 				</div>
 			</div>
-		</div>
-
-		<div class="highlight-options-collapsible">
-			<button class="collapse-toggle" id="collapseToggle">
-				<span class="toggle-text">Show Advanced Options</span>
-				<span class="toggle-icon">▼</span>
-			</button>
-			
-			<div class="highlight-options" id="highlightOptions" style="display: none;">
-				<div class="option-group">
-					<label for="highlightStyle">Highlight Style:</label>
-					<select id="highlightStyle">
-						<option value="background" selected>Background</option>
-						<option value="border">Border</option>
-						<option value="outline">Outline</option>
-						<option value="underline">Underline</option>
-						<option value="box-shadow">Box Shadow</option>
-					</select>
-				</div>
-				
-				<div class="option-group">
-					<label for="opacityInput">Opacity:</label>
-					<div class="opacity-controls">
-						<input type="range" id="opacityInput" min="0.1" max="1" step="0.1" value="1" title="Adjust highlight opacity">
-						<span id="opacityValue">100%</span>
-					</div>
-				</div>
-				
-				<div class="option-group">
-					<label for="textColorInput">Text Color:</label>
-					<div class="text-color-controls">
-						<input type="color" id="textColorInput" value="#000000" title="Choose text color">
-						<label class="checkbox-label">
-							<input type="checkbox" id="changeTextColor"> Change text color
-						</label>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="actions">
-			<button id="highlightButton" class="btn btn-primary">Highlight</button>
-			<button id="resetButton" class="btn btn-secondary">Reset</button>
 		</div>
 
 		<div class="history-section" id="historySection" style="display: none;">

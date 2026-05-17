@@ -29,11 +29,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (isHidden) {
       highlightOptions.style.display = 'block';
-      toggleText.textContent = 'Hide Advanced Options';
+      toggleText.textContent = 'Hide advanced options';
       toggleIcon.textContent = '▲';
     } else {
       highlightOptions.style.display = 'none';
-      toggleText.textContent = 'Show Advanced Options';
+      toggleText.textContent = 'Show advanced options';
       toggleIcon.textContent = '▼';
     }
   });
