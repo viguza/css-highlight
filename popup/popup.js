@@ -187,6 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var opacity = document.getElementById('opacityInput').value;
     var textColor = document.getElementById('textColorInput').value;
     var changeTextColor = document.getElementById('changeTextColor').checked;
+    var liveMode = document.getElementById('liveModeToggle').checked;
 
     color = colorInput.value;
 
@@ -224,7 +225,8 @@ document.addEventListener('DOMContentLoaded', function() {
         highlightStyle: highlightStyle,
         opacity: opacity,
         textColor: textColor,
-        changeTextColor: changeTextColor
+        changeTextColor: changeTextColor,
+        liveMode: liveMode
       });
       saveToHistory(buildHistoryEntry(searchTypeValue, identifier, color));
     }
@@ -254,10 +256,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Reset search options display
     updateSearchOptions();
 
-    // Reset element info
+    // Reset element info and live dot
     foundElements = [];
     currentElementIndex = 0;
     document.getElementById('elementInfo').style.display = 'none';
+    document.getElementById('liveDot').style.display = 'none';
 
     // Update the range input fill after reset
     updateOpacityRange();
@@ -276,6 +279,8 @@ document.addEventListener('DOMContentLoaded', function() {
       if (foundElements.length > 0) {
         highlightCurrentElement();
       }
+      const liveActive = document.getElementById('liveModeToggle').checked && foundElements.length > 0;
+      document.getElementById('liveDot').style.display = liveActive ? 'inline-block' : 'none';
     }
   });
 

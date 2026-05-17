@@ -1,6 +1,9 @@
 let originalElements = [];
 let lastHighlightConfig = null;
+let lastSearchParams = null;
 let currentNavIndex = -1;
+let observer = null;
+let debounceTimer = null;
 
 // Function to display error message to user
 function showErrorMessage() {
@@ -44,7 +47,7 @@ function showErrorMessage() {
 chrome.runtime.onMessage.addListener(function(message) {
   try {
     if(message.name === 'highlight') {
-      highlight(message.searchType, message.identifier, message.color, message.highlightStyle, message.opacity, message.textColor, message.changeTextColor);
+      highlight(message.searchType, message.identifier, message.color, message.highlightStyle, message.opacity, message.textColor, message.changeTextColor, message.liveMode);
     }
     if(message.name === 'reset') {
       reset();
@@ -61,93 +64,119 @@ chrome.runtime.onMessage.addListener(function(message) {
   }
 });
 
-function highlight(type, identifier, color, highlightStyle, opacity, textColor, changeTextColor) {
-  try {
-    let elements = [];
-    
-    switch (type) {
-      case 'class':
-        elements = Array.from(document.getElementsByClassName(identifier));
-        break;
-      case 'id':
-        var element = document.getElementById(identifier);
-        elements = element ? [element] : [];
-        break;
-      case 'css-selector':
-        try {
-          elements = Array.from(document.querySelectorAll(identifier));
-        } catch (error) {
-          console.error('Invalid CSS selector:', identifier);
-          showErrorMessage();
-          return;
-        }
-        break;
-      case 'attribute':
-        elements = findElementsByAttribute(identifier);
-        break;
-      case 'text-content':
-        elements = findElementsByText(identifier);
-        break;
-      default:
-        // Fallback to original behavior for 'both' and other types
-        elements = Array.from(document.querySelectorAll(`.${identifier},#${identifier}`));
-        break;
+function findElements(type, identifier) {
+  switch (type) {
+    case 'class':
+      return Array.from(document.getElementsByClassName(identifier));
+    case 'id': {
+      const el = document.getElementById(identifier);
+      return el ? [el] : [];
     }
+    case 'css-selector':
+      try {
+        return Array.from(document.querySelectorAll(identifier));
+      } catch (e) {
+        return [];
+      }
+    case 'attribute':
+      return findElementsByAttribute(identifier);
+    case 'text-content':
+      return findElementsByText(identifier);
+    default:
+      return Array.from(document.querySelectorAll(`.${identifier},#${identifier}`));
+  }
+}
 
-    // Store elements and highlight config for navigation
-    foundElementsForNavigation = elements;
-    lastHighlightConfig = { highlightStyle, color, opacity, textColor, changeTextColor };
-    currentNavIndex = -1;
+function applyElements(elements, highlightStyle, color, opacity, textColor, changeTextColor) {
+  for (var i = 0; i < elements.length; i++) {
+    const element = elements[i];
+    const found = originalElements.some(el => el.object === element);
 
-    // Send serializable element information back to popup
-    const elementData = elements.map(element => ({
-      tagName: element.tagName.toLowerCase(),
-      className: element.className || '',
-      id: element.id || '',
-      position: {
-        x: Math.round(element.getBoundingClientRect().left),
-        y: Math.round(element.getBoundingClientRect().top)
-      },
-      textContent: element.textContent ? element.textContent.substring(0, 50) + (element.textContent.length > 50 ? '...' : '') : '',
-      attributes: Array.from(element.attributes).map(attr => ({
-        name: attr.name,
-        value: attr.value
-      }))
-    }));
-
-    chrome.runtime.sendMessage({
-      name: 'elementsFound',
-      elements: elementData
-    });
-
-    for (var i = 0; i < elements.length; i++) {
-      let element = elements[i];
-      const found = originalElements.some(el => el.object === element);
-
-      if (!found) {
-        // Store original styles
-        const originalStyles = {
+    if (!found) {
+      originalElements.push({
+        object: element,
+        styles: {
           backgroundColor: element.style.backgroundColor,
           border: element.style.border,
           outline: element.style.outline,
           textDecoration: element.style.textDecoration,
           boxShadow: element.style.boxShadow,
           color: element.style.color
-        };
+        }
+      });
+    }
 
-        originalElements.push({
-          object: element,
-          styles: originalStyles
-        });
+    applyHighlightStyle(element, highlightStyle, color, opacity, textColor, changeTextColor);
+  }
+}
+
+function highlight(type, identifier, color, highlightStyle, opacity, textColor, changeTextColor, liveMode) {
+  try {
+    const elements = findElements(type, identifier);
+
+    if (type === 'css-selector' && elements.length === 0 && identifier) {
+      try { document.querySelectorAll(identifier); } catch (e) {
+        showErrorMessage();
+        return;
       }
+    }
 
-      // Apply new highlighting based on style
-      applyHighlightStyle(element, highlightStyle, color, opacity, textColor, changeTextColor);
+    foundElementsForNavigation = elements;
+    lastHighlightConfig = { highlightStyle, color, opacity, textColor, changeTextColor };
+    lastSearchParams = { type, identifier };
+    currentNavIndex = -1;
+
+    const elementData = elements.map(el => ({
+      tagName: el.tagName.toLowerCase(),
+      id: el.id || '',
+      textContent: el.textContent ? el.textContent.substring(0, 50) + (el.textContent.length > 50 ? '...' : '') : ''
+    }));
+
+    chrome.runtime.sendMessage({ name: 'elementsFound', elements: elementData });
+
+    applyElements(elements, highlightStyle, color, opacity, textColor, changeTextColor);
+
+    if (liveMode) {
+      startObserver();
+    } else {
+      stopObserver();
     }
   } catch (error) {
     console.error('Error in highlight function:', error);
     showErrorMessage();
   }
+}
+
+function startObserver() {
+  if (observer) return;
+  observer = new MutationObserver(function(mutations) {
+    const hasNewNodes = mutations.some(m => m.addedNodes.length > 0);
+    if (!hasNewNodes) return;
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(reapplyHighlight, 300);
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+
+function stopObserver() {
+  if (observer) {
+    observer.disconnect();
+    observer = null;
+  }
+  clearTimeout(debounceTimer);
+  debounceTimer = null;
+}
+
+function reapplyHighlight() {
+  if (!lastSearchParams || !lastHighlightConfig) return;
+  const c = lastHighlightConfig;
+
+  // Drop stale references (SPA re-renders swap out DOM nodes entirely)
+  originalElements = originalElements.filter(e => document.contains(e.object));
+
+  const elements = findElements(lastSearchParams.type, lastSearchParams.identifier);
+  applyElements(elements, c.highlightStyle, c.color, c.opacity, c.textColor, c.changeTextColor);
+  foundElementsForNavigation = elements;
 }
 
 function applyHighlightStyle(element, style, color, opacity, textColor, changeTextColor) {
@@ -218,7 +247,9 @@ function reset() {
     }
     originalElements = [];
     lastHighlightConfig = null;
+    lastSearchParams = null;
     currentNavIndex = -1;
+    stopObserver();
 
     // Clear element info in popup
     chrome.runtime.sendMessage({

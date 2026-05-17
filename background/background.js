@@ -10,7 +10,8 @@ chrome.runtime.onMessage.addListener(function(message) {
           highlightStyle: message.highlightStyle,
           opacity: message.opacity,
           textColor: message.textColor,
-          changeTextColor: message.changeTextColor
+          changeTextColor: message.changeTextColor,
+          liveMode: message.liveMode
         });
       });
       break;
