@@ -44,7 +44,7 @@ function showErrorMessage() {
   }, 5000);
 }
 
-chrome.runtime.onMessage.addListener(function(message) {
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   try {
     if(message.name === 'highlight') {
       highlight(message.searchType, message.identifier, message.color, message.highlightStyle, message.opacity, message.textColor, message.changeTextColor, message.liveMode);
@@ -57,6 +57,9 @@ chrome.runtime.onMessage.addListener(function(message) {
     }
     if(message.name === 'highlightCurrentElement') {
       highlightCurrentElement(message.index);
+    }
+    if(message.name === 'getState') {
+      sendResponse(getCurrentState());
     }
   } catch (error) {
     console.error('Error in message listener:', error);
@@ -301,6 +304,27 @@ function highlightCurrentElement(index) {
     currentElement.style.outlineOffset = '3px';
     currentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+}
+
+function getCurrentState() {
+  if (!lastSearchParams || !lastHighlightConfig) return null;
+  return {
+    searchType: lastSearchParams.type,
+    identifier: lastSearchParams.identifier,
+    color: lastHighlightConfig.color,
+    highlightStyle: lastHighlightConfig.highlightStyle,
+    opacity: lastHighlightConfig.opacity,
+    textColor: lastHighlightConfig.textColor,
+    changeTextColor: lastHighlightConfig.changeTextColor,
+    liveMode: observer !== null,
+    elementData: foundElementsForNavigation.map(function(el) {
+      return {
+        tagName: el.tagName.toLowerCase(),
+        id: el.id || '',
+        textContent: el.textContent ? el.textContent.substring(0, 50) + (el.textContent.length > 50 ? '...' : '') : ''
+      };
+    })
+  };
 }
 
 function findElementsByAttribute(attributeString) {

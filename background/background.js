@@ -33,5 +33,14 @@ chrome.runtime.onMessage.addListener(function(message) {
         chrome.tabs.sendMessage(tabs[0].id, message);
       });
       break;
+    case 'getState':
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        if (!tabs[0]) return;
+        chrome.tabs.sendMessage(tabs[0].id, { name: 'getState' }, function(state) {
+          if (chrome.runtime.lastError || !state) return;
+          chrome.runtime.sendMessage({ name: 'stateRestored', state: state }).catch(() => {});
+        });
+      });
+      break;
   }
 });

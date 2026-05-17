@@ -282,7 +282,62 @@ document.addEventListener('DOMContentLoaded', function() {
       const liveActive = document.getElementById('liveModeToggle').checked && foundElements.length > 0;
       document.getElementById('liveDot').style.display = liveActive ? 'inline-block' : 'none';
     }
+    if (message.name === 'stateRestored') {
+      restoreState(message.state);
+    }
   });
+
+  function restoreState(state) {
+    if (!state) return;
+
+    searchType.value = state.searchType;
+    searchType.dispatchEvent(new Event('change'));
+
+    switch (state.searchType) {
+      case 'class':
+      case 'id':
+        document.getElementById('identifierInput').value = state.identifier;
+        break;
+      case 'css-selector':
+        document.getElementById('cssSelectorInput').value = state.identifier;
+        break;
+      case 'attribute':
+        if (state.identifier.includes('=')) {
+          const match = state.identifier.match(/([^=]+)="([^"]+)"/);
+          if (match) {
+            document.getElementById('attributeName').value = match[1];
+            document.getElementById('attributeValue').value = match[2];
+          }
+        } else {
+          document.getElementById('attributeName').value = state.identifier;
+        }
+        break;
+      case 'text-content': {
+        const config = JSON.parse(state.identifier);
+        document.getElementById('textContentInput').value = config.text;
+        document.getElementById('caseSensitive').checked = config.caseSensitive;
+        document.getElementById('partialMatch').checked = config.partialMatch;
+        break;
+      }
+    }
+
+    colorInput.value = state.color;
+    advancedColorPickers.forEach(function(p) { p.value = state.color; });
+
+    document.getElementById('highlightStyle').value = state.highlightStyle;
+    document.getElementById('opacityInput').value = state.opacity;
+    updateOpacityRange();
+    document.getElementById('textColorInput').value = state.textColor;
+    document.getElementById('changeTextColor').checked = state.changeTextColor;
+    document.getElementById('liveModeToggle').checked = state.liveMode;
+
+    if (state.elementData && state.elementData.length > 0) {
+      foundElements = state.elementData;
+      currentElementIndex = 0;
+      updateElementInfo();
+      document.getElementById('liveDot').style.display = state.liveMode ? 'inline-block' : 'none';
+    }
+  }
 
   document.getElementById('historyClear').addEventListener('click', function() {
     chrome.storage.local.remove(HISTORY_KEY, function() {
@@ -291,6 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   loadHistory();
+  chrome.runtime.sendMessage({ name: 'getState' });
 });
 
 // --- History ---
